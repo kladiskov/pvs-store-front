@@ -4,13 +4,16 @@ import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import ListGroup from "./common/listGroup";
+import BooksTable from "./booksTable";
+import _ from "lodash";
 class Books extends Component {
   state = {
     books: [],
     genres: [],
     selectedGenre: Object,
     pageSize: 3,
-    currentPage: 1
+    currentPage: 1,
+    sortColumn: { type: "title", order: "asc" }
   };
   componentDidMount() {
     const genres = [{ name: "All genres" }, ...getGenres()];
@@ -31,20 +34,28 @@ class Books extends Component {
     this.setState({ books });
   };
 
-  render() {
-    const { length: count } = this.state.books;
+  getBooks = () => {
     const {
       currentPage,
       pageSize,
       books: allBooks,
-      selectedGenre
+      selectedGenre,
+      sortColumn
     } = this.state;
     const filtered =
       selectedGenre && selectedGenre.id
         ? allBooks.filter(book => book.genre.id === selectedGenre.id)
         : allBooks;
-    const books = paginate(filtered, currentPage, pageSize);
-    if (count === 0) return <p>There are no books</p>;
+    const sorted = _.orderBy(filtered, [sortColumn.type], [sortColumn.order]);
+    const books = paginate(sorted, currentPage, pageSize);
+    return { totalCount: filtered.length, books };
+  };
+
+  render() {
+    const { length: count } = this.state.books;
+    const { currentPage, pageSize } = this.state;
+    const { totalCount, books } = this.getBooks();
+    if (count === 0) return <p>There are no books availabe in the store.</p>;
     return (
       <div className="row">
         <div className="col-3">
@@ -55,42 +66,12 @@ class Books extends Component {
           />
         </div>
         <div className="col">
-          <p>Hello, There are {filtered.length} books in the store.</p>
-          <table className="table table-bordered table-hover" width="100%">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Genre</th>
-                <th>Rating</th>
-                <th>Like</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {books.map(book => (
-                <tr key={book.id}>
-                  <td>{book.title}</td>
-                  <td>{book.author}</td>
-                  <td>{book.genre.name}</td>
-                  <td>{book.rating}</td>
-                  <td />
-                  <td>
-                    <button
-                      className="btn-sm"
-                      onClick={() => this.handleDelete(book)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <p>Hello, There are {totalCount} books in the store.</p>
+          <BooksTable books={books} onDelete={this.handleDelete} />
           <Pagination
             currentPage={currentPage}
             onPageChange={this.handlePageChange}
-            itemsCount={filtered.length}
+            itemsCount={totalCount}
             pageSize={pageSize}
           />
         </div>
