@@ -1,21 +1,24 @@
 import React, { Component } from "react";
+import _ from "lodash";
 class TableBody extends Component {
+  renderCell = (item, column) => {
+    if (column.content) return column.content(item);
+    return _.get(item, column.type);
+  };
+  createKey = (item, column) => {
+    return item.id + (column.type || column.key);
+  };
   render() {
-    const { books, onDelete } = this.props;
+    const { data, columns } = this.props;
     return (
       <tbody>
-        {books.map(book => (
-          <tr key={book.id}>
-            <td>{book.title}</td>
-            <td>{book.author}</td>
-            <td>{book.genre.name}</td>
-            <td>{book.rating}</td>
-            <td />
-            <td>
-              <button className="btn-sm" onClick={() => onDelete(book)}>
-                Delete
-              </button>
-            </td>
+        {data.map(item => (
+          <tr key={item.id}>
+            {columns.map(column => (
+              <td key={this.createKey(item, column)}>
+                {this.renderCell(item, column)}
+              </td>
+            ))}
           </tr>
         ))}
       </tbody>

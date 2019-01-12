@@ -34,6 +34,10 @@ class Books extends Component {
     this.setState({ books });
   };
 
+  handleSort = sortColumn => {
+    this.setState({ sortColumn });
+  };
+
   getBooks = () => {
     const {
       currentPage,
@@ -53,7 +57,7 @@ class Books extends Component {
 
   render() {
     const { length: count } = this.state.books;
-    const { currentPage, pageSize } = this.state;
+    const { currentPage, pageSize, sortColumn } = this.state;
     const { totalCount, books } = this.getBooks();
     if (count === 0) return <p>There are no books availabe in the store.</p>;
     return (
@@ -67,7 +71,12 @@ class Books extends Component {
         </div>
         <div className="col">
           <p>Hello, There are {totalCount} books in the store.</p>
-          <BooksTable books={books} onDelete={this.handleDelete} />
+          <BooksTable
+            books={books}
+            onDelete={this.handleDelete}
+            sortColumn={sortColumn}
+            onSort={this.handleSort}
+          />
           <Pagination
             currentPage={currentPage}
             onPageChange={this.handlePageChange}
