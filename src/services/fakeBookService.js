@@ -88,12 +88,12 @@ export function getBooks() {
 }
 
 export function getBook(id) {
-  return books.find(m => m.id === id);
+  return books.find(book => book.id === id);
 }
 
 export function saveBook(book) {
   let bookInDb = books.find(m => m.id === book.id) || {};
-  bookInDb.name = book.name;
+  bookInDb.title = book.title;
   bookInDb.genre = genresAPI.genres.find(g => g._id === book.genreId);
   bookInDb.numberInStock = book.numberInStock;
   bookInDb.rating = book.rating;

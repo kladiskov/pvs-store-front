@@ -20,7 +20,7 @@ class BooksTable extends Component {
     {
       key: "like",
       content: book => (
-        <Like like={book.liked} onClick={() => this.props.onLike()} />
+        <Like like={book.liked} onClick={() => this.props.onLike(book)} />
       )
     },
     {

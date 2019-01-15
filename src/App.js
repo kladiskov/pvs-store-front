@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Book from "./components/book";
+import BookForm from "./components/bookForm";
 import NavBar from "./components/navBar";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Books from "./components/books";
@@ -13,11 +13,7 @@ class App extends Component {
         <NavBar />
         <main className="container">
           <Switch>
-            <Route
-              path="/books/:id"
-              location={this.props.location}
-              component={Book}
-            />
+            <Route path="/books/:id" component={BookForm} />
             <Route path="/books" component={Books} />
             <Route path="/categories" component={Categories} />
             <Route path="/not-found" component={NotFound} />
