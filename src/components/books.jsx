@@ -8,6 +8,7 @@ import BooksTable from "./booksTable";
 import SearchBox from "./common/searchBox";
 import _ from "lodash";
 import { Link } from "react-router-dom";
+
 class Books extends Component {
   state = {
     books: [],

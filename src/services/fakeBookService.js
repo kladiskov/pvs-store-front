@@ -92,15 +92,15 @@ export function getBook(id) {
 }
 
 export function saveBook(book) {
-  let bookInDb = books.find(m => m.id === book.id) || {};
+  let bookInDb = books.find(b => b.id === book.id) || {};
   bookInDb.title = book.title;
-  bookInDb.genre = genresAPI.genres.find(g => g._id === book.genreId);
+  bookInDb.genre = genresAPI.genres.find(g => g.id === book.genreId);
   bookInDb.numberInStock = book.numberInStock;
   bookInDb.rating = book.rating;
   bookInDb.author = book.author;
 
-  if (!bookInDb._id) {
-    bookInDb._id = Date.now();
+  if (!bookInDb.id) {
+    bookInDb.id = Date.now().toString();
     books.push(bookInDb);
   }
 

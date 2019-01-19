@@ -1,61 +1,81 @@
-import React, { Component } from "react";
+import React from "react";
 import { getGenres } from "../services/fakeGenreService";
-class BookForm extends Component {
+import { getBook, saveBook } from "../services/fakeBookService";
+import Form from "./common/form";
+import Joi from "joi-browser";
+
+class BookForm extends Form {
   state = {
     data: { title: "", genreId: "", author: "", numberInStock: "", rating: "" },
     errors: {},
     genres: []
   };
+
+  schema = {
+    id: Joi.string(),
+    title: Joi.string()
+      .required()
+      .label("Title"),
+    genreId: Joi.string()
+      .required()
+      .label("Genre"),
+    author: Joi.string()
+      .required()
+      .label("Author"),
+    numberInStock: Joi.number()
+      .required()
+      .min(0)
+      .max(1000)
+      .label("Stock"),
+    rating: Joi.number()
+      .required()
+      .min(0)
+      .max(10)
+      .label("Rating")
+  };
+
   componentDidMount() {
     const genres = getGenres();
     this.setState({ genres });
+    const bookId = this.props.match.params.id;
+    if (bookId === "new") return;
+    const book = getBook(bookId);
+    console.log(book);
+    if (!book) return this.props.history.replace("/not-found");
+    this.setState({ data: this.mapToData(book) });
   }
+  mapToData(book) {
+    return {
+      id: book.id,
+      title: book.title,
+      genreId: book.genre.id,
+      author: book.author,
+      numberInStock: book.numberInStock,
+      rating: book.rating
+    };
+  }
+
+  doSubmit = () => {
+    saveBook(this.state.data);
+    this.props.history.push("/books");
+  };
+
   render() {
+    const { genres } = this.state;
     return (
       <div>
         <h1>Book details</h1>
-        <form onSubmit={this.handleSubmit()}>
-          <div className="form-group">
-            <label htmlFor="title">Title</label>
-            <input type="text" name="title" className="form-control" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="author">Author</label>
-            <input type="text" name="author" className="form-control" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="genre">Genre</label>
-            <select type="text" name="genre" className="form-control">
-              {this.state.genres.map(genre => (
-                <option key={genre.id} value={genre.id}>
-                  {genre.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="numberInStocks">Stock</label>
-            <input type="text" name="numberInStocks" className="form-control" />
-          </div>
-          <div className="form-group">
-            <label htmlFor="rating">Rating</label>
-            <input type="text" name="rating" className="form-control" />
-          </div>
-          <button className="btn btn-primary" disabled={this.handleValidate()}>
-            Save
-          </button>
+        <form onSubmit={this.handleSubmit}>
+          {this.renderInput("title", "Title")}
+          {this.renderInput("author", "Author")}
+          {this.renderSelect("genreId", "Genre", genres)}
+          {this.renderInput("numberInStock", "Stock")}
+          {this.renderInput("rating", "Rating")}
+          {this.renderButton("Save")}
         </form>
       </div>
     );
   }
-
-  handleSubmit = () => {
-    console.log("submitted.");
-  };
-
-  handleValidate = () => {
-    return false;
-  };
 }
 
 export default BookForm;
