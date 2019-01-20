@@ -40,7 +40,6 @@ class BookForm extends Form {
     const bookId = this.props.match.params.id;
     if (bookId === "new") return;
     const book = getBook(bookId);
-    console.log(book);
     if (!book) return this.props.history.replace("/not-found");
     this.setState({ data: this.mapToData(book) });
   }

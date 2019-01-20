@@ -108,7 +108,8 @@ export function saveBook(book) {
 }
 
 export function deleteBook(id) {
-  let bookInDb = books.find(m => m._id === id);
+  let bookInDb = books.find(book => book.id === id);
+  console.log(bookInDb);
   books.splice(books.indexOf(bookInDb), 1);
   return bookInDb;
 }

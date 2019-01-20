@@ -34,7 +34,7 @@ class Books extends Component {
   };
 
   handleDelete = book => {
-    const books = this.state.books.filter(b => b.id !== book.id);
+    const books = this.state.books.filter(b => b.id !== book);
     this.setState({ books });
   };
 
