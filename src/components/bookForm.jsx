@@ -93,7 +93,6 @@ class BookForm extends Form {
   doSubmit = async () => {
     const book = { ...this.state.data };
     const item = this.mapToPOJO(book);
-    console.log(item);
     await saveBook(item);
     this.props.history.push("/books");
   };

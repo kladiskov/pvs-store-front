@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { getBooks } from "../services/bookService";
-import { getBooksFake } from "../services/fakeBookService";
 import { getGenres } from "../services/genreService";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
