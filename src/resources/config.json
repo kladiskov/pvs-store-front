@@ -1,0 +1,7 @@
+{
+  "fetchBooks": "http://localhost:8080/pvs-store/books/get",
+  "addBook": "http://localhost:8080/pvs-store/books/add",
+  "genreApiEndPoint": "http://localhost:8080/pvs-store/genres/get",
+  "username": "admin",
+  "password": "changeit"
+}

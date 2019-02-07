@@ -1,12 +1,20 @@
 import React from "react";
-import { getGenres } from "../services/fakeGenreService";
-import { getBook, saveBook } from "../services/fakeBookService";
+import { getGenres } from "../services/genreService";
+import { getBook, saveBook } from "../services/bookService";
 import Form from "./common/form";
 import Joi from "joi-browser";
 
 class BookForm extends Form {
   state = {
-    data: { title: "", genreId: "", author: "", numberInStock: "", rating: "" },
+    data: {
+      title: "",
+      genreId: "",
+      author: "",
+      numberInStock: "",
+      rating: "",
+      publishDate: "",
+      price: ""
+    },
     errors: {},
     genres: []
   };
@@ -31,18 +39,30 @@ class BookForm extends Form {
       .required()
       .min(0)
       .max(10)
-      .label("Rating")
+      .label("Rating"),
+    publishDate: Joi.date().label("Publish Date"),
+    price: Joi.number()
+      .required()
+      .min(1)
+      .max(10000)
+      .label("price")
   };
 
-  componentDidMount() {
-    const genres = getGenres();
-    this.setState({ genres });
+  async componentDidMount() {
+    const { data } = await getGenres();
+    this.setState({ genres: this.mapToGenre(data) });
     const bookId = this.props.match.params.id;
     if (bookId === "new") return;
     const book = getBook(bookId);
     if (!book) return this.props.history.replace("/not-found");
     this.setState({ data: this.mapToData(book) });
   }
+  mapToGenre(data) {
+    return data.map(g => {
+      return { id: g.genreId, name: g.genreName };
+    });
+  }
+
   mapToData(book) {
     return {
       id: book.id,
@@ -54,8 +74,27 @@ class BookForm extends Form {
     };
   }
 
-  doSubmit = () => {
-    saveBook(this.state.data);
+  mapToPOJO(book) {
+    return {
+      bookId: book.id,
+      title: book.title,
+      genre: {
+        genreId: book.genreId
+      },
+      author: book.author,
+      stock: book.numberInStock,
+      rating: book.rating,
+      active: true,
+      publishDate: book.publishDate,
+      price: book.price
+    };
+  }
+
+  doSubmit = async () => {
+    const book = { ...this.state.data };
+    const item = this.mapToPOJO(book);
+    console.log(item);
+    await saveBook(item);
     this.props.history.push("/books");
   };
 
@@ -70,6 +109,8 @@ class BookForm extends Form {
           {this.renderSelect("genreId", "Genre", genres)}
           {this.renderInput("numberInStock", "Stock")}
           {this.renderInput("rating", "Rating")}
+          {this.renderInput("publishDate", "Publish Date")}
+          {this.renderInput("price", "Price")}
           {this.renderButton("Save")}
         </form>
       </div>
