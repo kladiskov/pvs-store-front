@@ -1,15 +1,20 @@
 import http from "./storeService";
+import axios from "axios";
 
-const apiEndPoint = "http://localhost:8080/pvs-store/api/books";
+import * as config from "../resources/config.json";
 
 export function getBooks() {
-  return http.get(apiEndPoint + "/getAll");
+  return axios(config.apiEndPoint + "/books/getAll");
 }
 
 export function getBook(id) {
-  return http.get(apiEndPoint + "/get/" + id);
+  return http.get(config.apiEndPoint + "/books/get/" + id);
 }
 
 export function saveBook(book) {
-  return http.post(apiEndPoint + "/add", book);
+  return http.post(config.apiEndPoint + "/books/add", book);
+}
+
+export function deleteBook(book) {
+  return http.delete(config.apiEndPoint + "/books/delete/" + book);
 }

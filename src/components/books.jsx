@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getBooks } from "../services/bookService";
+import { getBooks, deleteBook } from "../services/bookService";
 import { getGenres } from "../services/genreService";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
@@ -8,6 +8,7 @@ import BooksTable from "./booksTable";
 import SearchBox from "./common/searchBox";
 import _ from "lodash";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 class Books extends Component {
   state = {
@@ -62,9 +63,18 @@ class Books extends Component {
     this.setState({ selectedGenre: genre, searchQuery: "", currentPage: 1 });
   };
 
-  handleDelete = book => {
+  handleDelete = async book => {
+    const originalBooks = this.state.books;
     const books = this.state.books.filter(b => b.id !== book);
     this.setState({ books });
+    try {
+      await deleteBook(book);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        toast.error("This post has already been deleted.");
+      }
+      this.setState({ books: originalBooks });
+    }
   };
 
   handleSort = sortColumn => {

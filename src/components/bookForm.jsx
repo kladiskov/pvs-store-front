@@ -48,14 +48,26 @@ class BookForm extends Form {
       .label("price")
   };
 
-  async componentDidMount() {
+  async populateGenres() {
     const { data } = await getGenres();
     this.setState({ genres: this.mapToGenre(data) });
-    const bookId = this.props.match.params.id;
-    if (bookId === "new") return;
-    const book = getBook(bookId);
-    if (!book) return this.props.history.replace("/not-found");
-    this.setState({ data: this.mapToData(book) });
+  }
+
+  async populateBook() {
+    try {
+      const bookId = this.props.match.params.id;
+      if (bookId === "new") return;
+      const book = await getBook(bookId);
+      this.setState({ data: this.mapToData(book) });
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        this.props.history.replace("/not-found");
+    }
+  }
+
+  async componentDidMount() {
+    await this.populateGenres();
+    await this.populateBook();
   }
   mapToGenre(data) {
     return data.map(g => {
@@ -63,14 +75,16 @@ class BookForm extends Form {
     });
   }
 
-  mapToData(book) {
+  mapToData({ data }) {
     return {
-      id: book.id,
-      title: book.title,
-      genreId: book.genre.id,
-      author: book.author,
-      numberInStock: book.numberInStock,
-      rating: book.rating
+      id: data.bookId,
+      title: data.title,
+      genreId: data.genreId,
+      author: data.author,
+      numberInStock: data.stock,
+      rating: data.rating,
+      publishDate: data.publishDate,
+      price: data.price
     };
   }
 

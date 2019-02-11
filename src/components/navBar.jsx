@@ -25,11 +25,11 @@ const NavBar = props => {
           <NavLink className="nav-item nav-link" to="/categories">
             Categories
           </NavLink>
-          <NavLink className="nav-item nav-link" to="/books">
-            Pricing
+          <NavLink className="nav-item nav-link disabled" to="/books">
+            Top Picks
           </NavLink>
-          <NavLink className="nav-item nav-link disabled" to="/book">
-            Disabled
+          <NavLink className="nav-item nav-link" to="/register">
+            Register
           </NavLink>
         </div>
       </div>

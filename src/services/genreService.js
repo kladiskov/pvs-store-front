@@ -1,9 +1,10 @@
 import http from "./storeService";
+import * as config from "../resources/config.json";
 
 export function getGenres() {
-  return http.get("http://localhost:8080/pvs-store/api/genres/getAll");
+  return http.get(config.apiEndPoint + "/genres/getAll");
 }
 
 export function getGenre(id) {
-  return http.get("http://localhost:8080/pvs-store/api/genres/get/" + id);
+  return http.get(config.apiEndPoint + "/genres/get/" + id);
 }
