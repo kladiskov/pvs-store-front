@@ -4,6 +4,8 @@ import jwt_decode from "jwt-decode";
 
 const TOKEN_KEY = "token";
 
+http.setToken(getToken());
+
 export function addUser(data) {
   return http.post(apiEndPoint + "/user/register", data);
 }
