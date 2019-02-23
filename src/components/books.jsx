@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { getBooks } from "../services/fakeBookService";
-import { getGenres } from "../services/fakeGenreService";
+import { getBooks, deleteBook } from "../services/bookService";
+import { getGenres } from "../services/genreService";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import ListGroup from "./common/listGroup";
@@ -8,6 +8,8 @@ import BooksTable from "./booksTable";
 import SearchBox from "./common/searchBox";
 import _ from "lodash";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+
 class Books extends Component {
   state = {
     books: [],
@@ -18,10 +20,39 @@ class Books extends Component {
     searchQuery: "",
     sortColumn: { type: "title", order: "asc" }
   };
-  componentDidMount() {
-    const selectedGenre = { name: "All genres" };
-    const genres = [selectedGenre, ...getGenres()];
-    this.setState({ books: getBooks(), genres, selectedGenre });
+  async componentDidMount() {
+    const categories = await getGenres();
+    const items = await getBooks();
+    this.setState({
+      books: this.mapToBook(items),
+      genres: this.mapToGenre(categories),
+      selectedGenre: { id: "", name: "All genres" }
+    });
+  }
+
+  mapToBook({ data }) {
+    return data.map(book => {
+      return {
+        id: book.bookId,
+        title: book.title,
+        genre: { id: book.genre.genreId, name: book.genre.genreName },
+        numberInStock: book.stock,
+        rating: book.rating,
+        author: book.author,
+        price: book.price,
+        publishDate: book.publishDate
+      };
+    });
+  }
+
+  mapToGenre({ data }) {
+    const selectedGenre = { id: "", name: "All genres" };
+    return [
+      selectedGenre,
+      ...data.map(g => {
+        return { id: g.genreId, name: g.genreName };
+      })
+    ];
   }
 
   handlePageChange = page => {
@@ -32,9 +63,18 @@ class Books extends Component {
     this.setState({ selectedGenre: genre, searchQuery: "", currentPage: 1 });
   };
 
-  handleDelete = book => {
-    const books = this.state.books.filter(b => b.id !== book.id);
+  handleDelete = async book => {
+    const originalBooks = this.state.books;
+    const books = this.state.books.filter(b => b.id !== book);
     this.setState({ books });
+    try {
+      await deleteBook(book);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        toast.error("This post has already been deleted.");
+      }
+      this.setState({ books: originalBooks });
+    }
   };
 
   handleSort = sortColumn => {

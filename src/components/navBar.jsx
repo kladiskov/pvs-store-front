@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-const NavBar = props => {
+const NavBar = ({ user }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <Link className="navbar-brand" to="/">
@@ -25,12 +25,29 @@ const NavBar = props => {
           <NavLink className="nav-item nav-link" to="/categories">
             Categories
           </NavLink>
-          <NavLink className="nav-item nav-link" to="/books">
-            Pricing
+          <NavLink className="nav-item nav-link disabled" to="/books">
+            Top Picks
           </NavLink>
-          <NavLink className="nav-item nav-link disabled" to="/book">
-            Disabled
-          </NavLink>
+          {!user && (
+            <React.Fragment>
+              <NavLink className="nav-item nav-link" to="/login">
+                Login
+              </NavLink>
+              <NavLink className="nav-item nav-link" to="/register">
+                Register
+              </NavLink>
+            </React.Fragment>
+          )}
+          {user && (
+            <React.Fragment>
+              <NavLink className="nav-item nav-link" to="/profile">
+                {user.name}
+              </NavLink>
+              <NavLink className="nav-item nav-link" to="/logout">
+                Logout
+              </NavLink>
+            </React.Fragment>
+          )}
         </div>
       </div>
     </nav>
