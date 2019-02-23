@@ -6,7 +6,14 @@ import { toast } from "react-toastify";
 
 class Registration extends Form {
   state = {
-    data: { username: "", password: "", email: "", mobile: "" },
+    data: {
+      username: "",
+      password: "",
+      email: "",
+      phone: "",
+      firstname: "",
+      lastname: ""
+    },
     errors: {}
   };
   schema = {
@@ -15,6 +22,16 @@ class Registration extends Form {
       .min(5)
       .max(30)
       .label("User Name"),
+    firstname: Joi.string()
+      .required()
+      .min(3)
+      .max(30)
+      .label("First Name"),
+    lastname: Joi.string()
+      .required()
+      .min(1)
+      .max(30)
+      .label("Last Name"),
     password: Joi.string()
       .min(3)
       .max(30)
@@ -24,31 +41,26 @@ class Registration extends Form {
       .email()
       .required()
       .label("Email"),
-    mobile: Joi.number()
+    phone: Joi.number()
       .required()
       .label("Mobile Phone")
   };
 
-  mapToData() {
-    const data = this.state.data;
-    return {
-      userName: data.username,
-      emailId: data.email,
-      phoneNumber: data.mobile
-    };
-  }
-
   doSubmit = async () => {
     try {
-      const data = this.mapToData();
-      console.log(data);
-      await addUser(data);
+      await addUser(this.state.data);
+      toast("Sucessfully created user '" + this.state.data.username + "'");
+      //localStorage.setItem("token", response.headers["x-auth-token"]);
+      this.props.history.push("/books");
     } catch (ex) {
-      if (ex.response && ex.response.status === 404) {
-        toast.error("User already exists.");
+      console.log(ex.response);
+      if (ex.response && ex.response.status === 400) {
+        const { data } = ex.response;
+        const errors = { ...this.state.errors };
+        errors.username = data.message;
+        this.setState({ errors });
       }
     }
-    this.props.history.push("/books");
   };
 
   render() {
@@ -58,8 +70,10 @@ class Registration extends Form {
         <form onSubmit={this.handleSubmit}>
           {this.renderInput("username", "Username")}
           {this.renderInput("password", "Password", "password")}
+          {this.renderInput("firstname", "First Name")}
+          {this.renderInput("lastname", "Last Name")}
           {this.renderInput("email", "Email")}
-          {this.renderInput("mobile", "Mobile")}
+          {this.renderInput("phone", "Mobile Phone")}
           {this.renderButton("Register")}
         </form>
       </div>
