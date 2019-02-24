@@ -3,6 +3,7 @@ import Form from "./common/form";
 import Joi from "joi-browser";
 import user from "../services/userService";
 import { toast } from "react-toastify";
+import { Redirect } from "react-router-dom";
 class Login extends Form {
   state = { data: { username: "", password: "" }, errors: {} };
   schema = {
@@ -25,8 +26,10 @@ class Login extends Form {
       toast(
         "Authentication was successful for '" + this.state.data.username + "'"
       );
+      const { state } = this.props.location;
       //this.props.history.push("/books");
-      window.location = "/"; //need a full refresh of the dom to set the current user
+      //window.location = "/"; //need a full refresh of the dom to set the current user
+      window.location = state ? state.from.pathname : "/"; //get the redirect link from the previous page, if it is available.
     } catch (ex) {
       if (
         ex.response &&
@@ -41,6 +44,8 @@ class Login extends Form {
   };
 
   render() {
+    console.log(user.getCurrentUser());
+    if (user.getCurrentUser()) return <Redirect to="/" />;
     return (
       <div>
         <h1>Login</h1>

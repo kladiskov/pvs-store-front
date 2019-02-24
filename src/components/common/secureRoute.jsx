@@ -7,8 +7,15 @@ const SecureRoute = ({ path, component: Component, render, ...rest }) => {
       //path={path} //this can be remove as {...rest} will have it.
       {...rest}
       render={props => {
-        console.log(props);
-        if (!auth.getCurrentUser()) return <Redirect to="/login" />;
+        if (!auth.getCurrentUser())
+          return (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: props.location }
+              }}
+            />
+          );
         return Component ? <Component {...props} /> : render(props);
       }}
     />

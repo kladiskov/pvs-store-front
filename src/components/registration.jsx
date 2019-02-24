@@ -1,8 +1,9 @@
 import React from "react";
 import Form from "./common/form";
 import Joi from "joi-browser";
-import { addUser } from "../services/userService";
+import user from "../services/userService";
 import { toast } from "react-toastify";
+import { Redirect } from "react-router-dom";
 
 class Registration extends Form {
   state = {
@@ -48,7 +49,7 @@ class Registration extends Form {
 
   doSubmit = async () => {
     try {
-      await addUser(this.state.data);
+      await user.register(this.state.data);
       toast("Sucessfully created user '" + this.state.data.username + "'");
       //localStorage.setItem("token", response.headers["x-auth-token"]);
       this.props.history.push("/books");
@@ -64,6 +65,7 @@ class Registration extends Form {
   };
 
   render() {
+    if (user.getCurrentUser()) return <Redirect to="/" />;
     return (
       <div>
         <h1>Registration</h1>

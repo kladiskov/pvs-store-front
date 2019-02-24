@@ -6,7 +6,7 @@ const TOKEN_KEY = "token";
 
 http.setToken(getToken());
 
-export function addUser(data) {
+export function register(data) {
   return http.post(apiEndPoint + "/user/register", data);
 }
 
@@ -38,6 +38,7 @@ export function getToken() {
 }
 
 export default {
+  register,
   login,
   logout,
   getCurrentUser,
