@@ -124,6 +124,7 @@ class Books extends Component {
       genres,
       selectedGenre
     } = this.state;
+    const { user } = this.props;
     const { totalCount, books } = this.getData();
     if (count === 0) return <p>There are no books availabe in the store.</p>;
     return (
@@ -137,13 +138,15 @@ class Books extends Component {
         </div>
         <div className="col">
           <p>Hello, There are {totalCount} books in the store.</p>
-          <Link
-            to="/books/new"
-            className="btn btn-primary"
-            style={{ marginBottom: 20 }}
-          >
-            Add New
-          </Link>
+          {user && (
+            <Link
+              to="/books/new"
+              className="btn btn-primary"
+              style={{ marginBottom: 20 }}
+            >
+              Add New
+            </Link>
+          )}
           <SearchBox value={searchQuery} onChange={this.handleSearch} />
           <BooksTable
             books={books}

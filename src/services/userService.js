@@ -4,7 +4,9 @@ import jwt_decode from "jwt-decode";
 
 const TOKEN_KEY = "token";
 
-export function addUser(data) {
+http.setToken(getToken());
+
+export function register(data) {
   return http.post(apiEndPoint + "/user/register", data);
 }
 
@@ -36,6 +38,7 @@ export function getToken() {
 }
 
 export default {
+  register,
   login,
   logout,
   getCurrentUser,
