@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import BookForm from "./components/bookForm";
-import NavBar from "./components/navBar";
+import StoreNavBar from "./components/navBar";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -27,7 +27,7 @@ class App extends Component {
     return (
       <React.Fragment>
         <ToastContainer />
-        <NavBar user={user} />
+        <StoreNavBar user={user} />
         <main className="container">
           <Switch>
             <Route path="/register" component={Registration} />
