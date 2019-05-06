@@ -10,6 +10,9 @@ import _ from "lodash";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import ItemsDisplay from "./itemsDisplay";
+import StoreBanner from "./storeBanner";
+
+import "./books.css";
 
 class Books extends Component {
   state = {
@@ -161,6 +164,7 @@ class Books extends Component {
               onLike={this.handleLike}
             />
           )}
+          <StoreBanner />
           {!user && <ItemsDisplay data={books} />}
           <Pagination
             currentPage={currentPage}

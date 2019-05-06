@@ -22,8 +22,12 @@ class StoreModal extends Component {
           <p>ISBN: {item.isbn}</p>
           <p>Author: {item.author}</p>
           <p>Published Date: {item.publishDate}</p>
-          <p>Price:{item.price}</p>
-          <p>Description:{item.description}</p>
+          <p>Price:Rs {item.price}</p>
+          <p>
+            About the Book:
+            <br />
+            {item.description}
+          </p>
           <p>Pages: {item.pages}</p>
         </Modal.Body>
         <Modal.Footer>

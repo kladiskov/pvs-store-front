@@ -24,7 +24,7 @@ class Item extends Component {
           <Card.Body>
             <Card.Title>{item.title}</Card.Title>
             <Card.Text>
-              <p>ISBN: {item.isbn}</p>
+              <span>ISBN: {item.isbn}</span>
               Author: {item.author}
               <br />
               Price: Rs {item.price}
