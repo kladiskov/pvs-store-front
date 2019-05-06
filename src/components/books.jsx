@@ -9,13 +9,17 @@ import SearchBox from "./common/searchBox";
 import _ from "lodash";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import ItemsDisplay from "./itemsDisplay";
+import StoreBanner from "./storeBanner";
+
+import "./books.css";
 
 class Books extends Component {
   state = {
     books: [],
     genres: [],
     selectedGenre: null,
-    pageSize: 3,
+    pageSize: 6,
     currentPage: 1,
     searchQuery: "",
     sortColumn: { type: "title", order: "asc" }
@@ -40,7 +44,10 @@ class Books extends Component {
         rating: book.rating,
         author: book.author,
         price: book.price,
-        publishDate: book.publishDate
+        publishDate: book.publishDate,
+        isbn: book.isbn,
+        description: book.description,
+        pages: book.pages
       };
     });
   }
@@ -148,13 +155,17 @@ class Books extends Component {
             </Link>
           )}
           <SearchBox value={searchQuery} onChange={this.handleSearch} />
-          <BooksTable
-            books={books}
-            onDelete={this.handleDelete}
-            sortColumn={sortColumn}
-            onSort={this.handleSort}
-            onLike={this.handleLike}
-          />
+          {user && (
+            <BooksTable
+              books={books}
+              onDelete={this.handleDelete}
+              sortColumn={sortColumn}
+              onSort={this.handleSort}
+              onLike={this.handleLike}
+            />
+          )}
+          <StoreBanner />
+          {!user && <ItemsDisplay data={books} />}
           <Pagination
             currentPage={currentPage}
             onPageChange={this.handlePageChange}

@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css?family=Ubuntu");
+
+.navbar {
+  padding-left: 20px;
+  padding-right: 20px;
+  font-family: "Ubuntu";
+}
+
+#first {
+  color: rgb(14, 199, 153);
+}
+
+#second {
+  color: rgb(168, 107, 28);
+}
+
+#third {
+  color: rgb(78, 103, 186);
+}
+
+.user-items {
+  margin-left: 10%;
+}
